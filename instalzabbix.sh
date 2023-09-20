@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if sudo service mysql status | grep active
+if sudo systemctl is-active mysql &> /dev/null
 then
         echo "MySql está instalado"
 
