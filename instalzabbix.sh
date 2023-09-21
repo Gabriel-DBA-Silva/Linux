@@ -104,4 +104,6 @@ echo "Arquivo zabbix.conf.php criado"
 ip_address=$(ip a | awk '/enp0s3/ && /inet / {gsub(/\/.*/, "", $2); print $2}')
 
 # Exiba o endereço para acessar o zabbix
-echo "para poder acessar o zabbix acessa com o http:/"$ip_address"/zabbix/setup.php"
+echo "para poder acessar o zabbix acessa com o http:/"$ip_address"/zabbix/"
+echo "Login: Admin" 
+echo "Senha: zabbix"
