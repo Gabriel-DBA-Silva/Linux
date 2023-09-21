@@ -30,7 +30,7 @@ echo "instalação do servidor front e agente concluído"
 senhatemporaria=$(sudo cat /var/log/mysqld.log | grep 'A temporary password is generated for root@localhost' | awk -F': ' '{print $2}')
 
 #senha definitiva
-senhadefinitiva="GShorus#1995"
+senhadefinitiva="GCSestudos#1997"
 
 #altera para senha definitva
 sudo mysql --connect-expired-password  -u root -p"$senhatemporaria" -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$senhadefinitiva';" >/dev/null 2>&1
