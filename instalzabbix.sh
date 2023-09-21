@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Instalação do zabbix iniciado"
+
 if sudo systemctl is-active mysql &> /dev/null
 then
         echo "MySql está instalado"
@@ -22,6 +24,7 @@ dnf clean all >/dev/null 2>&1
 #instale o servidor front e agente
 dnf install -y zabbix-server-mysql zabbix-web-mysql zabbix-apache-conf zabbix-sql-scripts zabbix-selinux-policy zabbix-agent >/dev/null 2>&1
 
+echo "instalação do servidor front e agente concluído"
 
 # pega a senha temporária
 senhatemporaria=$(sudo cat /var/log/mysqld.log | grep 'A temporary password is generated for root@localhost' | awk -F': ' '{print $2}')
@@ -42,6 +45,7 @@ set global log_bin_trust_function_creators = 1;" >/dev/null 2>&1
 #importa o esquema do banco
 zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p"$senhadefinitiva" zabbix >/dev/null 2>&1
 
+echo "importação do esquema do banco de dados concluído"
 
 #desativa o log_bin_trust_function_creators
 sudo mysql -u root -p"$senhadefinitiva" -e "set global log_bin_trust_function_creators = 0;" >/dev/null 2>&1
@@ -66,6 +70,70 @@ systemctl enable zabbix-server zabbix-agent httpd php-fpm >/dev/null 2>&1
 
 firewall-cmd --permanent --add-service=http >/dev/null 2>&1
 firewall-cmd --reload >/dev/null 2>&1
+
+#
+
+echo "<?php
+// Zabbix GUI configuration file.
+
+$DB['TYPE']                     = 'MYSQL';
+$DB['SERVER']                   = 'localhost';
+$DB['PORT']                     = '0';
+$DB['DATABASE']                 = 'zabbix';
+$DB['USER']                     = 'zabbix';
+$DB['PASSWORD']                 = '$senhadefinitiva';
+
+// Schema name. Used for PostgreSQL.
+$DB['SCHEMA']                   = '';
+
+// Used for TLS connection.
+$DB['ENCRYPTION']               = false;
+$DB['KEY_FILE']                 = '';
+$DB['CERT_FILE']                = '';
+$DB['CA_FILE']                  = '';
+$DB['VERIFY_HOST']              = false;
+$DB['CIPHER_LIST']              = '';
+
+// Vault configuration. Used if database credentials are stored in Vault secrets manager.
+$DB['VAULT']                    = '';
+$DB['VAULT_URL']                = '';
+$DB['VAULT_DB_PATH']            = '';
+$DB['VAULT_TOKEN']              = '';
+$DB['VAULT_CERT_FILE']          = '';
+$DB['VAULT_KEY_FILE']           = '';
+// Uncomment to bypass local caching of credentials.
+// $DB['VAULT_CACHE']           = true;
+
+// Use IEEE754 compatible value range for 64-bit Numeric (float) history values.
+// This option is enabled by default for new Zabbix installations.
+// For upgraded installations, please read database upgrade notes before enabling this option.
+$DB['DOUBLE_IEEE754']           = true;
+
+// Uncomment and set to desired values to override Zabbix hostname/IP and port.
+// $ZBX_SERVER                  = '';
+// $ZBX_SERVER_PORT             = '';
+
+$ZBX_SERVER_NAME                = 'dbzabbix';
+
+$IMAGE_FORMAT_DEFAULT   = IMAGE_FORMAT_PNG;
+
+// Uncomment this block only if you are using Elasticsearch.
+// Elasticsearch url (can be string if same url is used for all types).
+//$HISTORY['url'] = [
+//      'uint' => 'http://localhost:9200',
+//      'text' => 'http://localhost:9200'
+//];
+// Value types stored in Elasticsearch.
+//$HISTORY['types'] = ['uint', 'text'];
+
+// Used for SAML authentication.
+// Uncomment to override the default paths to SP private key, SP and IdP X.509 certificates, and to set extra settings.
+//$SSO['SP_KEY']                        = 'conf/certs/sp.key';
+//$SSO['SP_CERT']                       = 'conf/certs/sp.crt';
+//$SSO['IDP_CERT']              = 'conf/certs/idp.crt';
+//$SSO['SETTINGS']              = [];" | sudo tee /etc/zabbix/web/zabbix.conf.php >/dev/null
+
+echo "Arquivo zabbix.conf.php criado"
 
 # parte do script para mostrar o link do zabbix
 # Execute o comando 'ip a' e filtra o endereço IP da interface enp0s3
