@@ -79,7 +79,7 @@ echo "<?php
 \$DB['PORT']                     = '0';
 \$DB['DATABASE']                 = 'zabbix';
 \$DB['USER']                     = 'zabbix';
-\$DB['PASSWORD']                 = 'GShorus#1995';
+\$DB['PASSWORD']                 = '$senhadefinitiva';
 \$DB['SCHEMA']                   = '';
 \$DB['ENCRYPTION']               = false;
 \$DB['KEY_FILE']                 = '';
