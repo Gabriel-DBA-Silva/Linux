@@ -42,6 +42,21 @@ ArqProc="uname -m"
 # tempo que a maquina está no ar
 uptime=$(uptime | awk '{print $2, $3}')
 
+# memória: pgpgin/s)
+pgpgins=$(sar -B 1 1 | awk 'NR==3 {print $3}')
+dadopgpgins=$(sar -B 1 1 | awk 'NR==4 {print $3}')
+
+# pgpgout/s 
+pgpgouts=$(sar -B 1 1 | awk 'NR==3 {print $4}')
+dadopgpgouts=$(sar -B 1 1 | awk 'NR==4 {print $4}')
+
+# falt/s 
+falts=$(sar -B 1 1 | awk 'NR==3 {print $5}')
+dadofalts=$(sar -B 1 1 | awk 'NR==4 {print $5}')
+
+#majflt/s
+majflts=$(sar -B 1 1 | awk 'NR==3 {print $6}')
+dadomajflts=$(sar -B 1 1 | awk 'NR==4 {print $6}')
 
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
@@ -80,6 +95,12 @@ json_data=$(cat <<EOF
    	{
   "maquina_no_ar": "$uptime"
     	},
+"memoria": {
+	"$pgpgins": "$dadopgpgins"
+	"$pgpgouts": "$dadopgpgouts"
+	"$falts": "$dadofalts"
+	"$majflts": "$dadomajflts"
+	},
   
 }
 EOF
