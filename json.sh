@@ -30,6 +30,18 @@ dadorkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$5}')
 dadowkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$6}')
 dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
 
+#  distribuição do linux
+distLinux="cat /etc/redhat-release"
+
+# versão do kernel
+Vkernel="uname -r"
+
+#arquitetura do processador
+ArqProc="uname -m"
+
+# tempo que a maquina está no ar
+uptime=$(uptime | awk '{print $2, $3}')
+
 
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
@@ -55,7 +67,20 @@ json_data=$(cat <<EOF
   	"$diskA": "$dadoutil_A"
    	"$diskB": "$dadoutil_B"
     	"$diskC": "$dadoutil_C"
-     	}   
+     	},
+      	{
+  "Distribuicao_Linux": "$distLinux"
+  	},
+   	{
+  "Vercao_Linux": "$Vkernel"
+  	},
+   	{
+  "arquitetura_processador": "$ArqProc"
+  	},
+   	{
+  "maquina_no_ar": "$uptime"
+    	},
+  
 }
 EOF
 )
