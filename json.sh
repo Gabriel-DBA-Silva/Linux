@@ -91,6 +91,26 @@ swap_total=$(free | awk 'NR==3 {print $2}')
 swap_used=$(free | awk 'NR==3 {print $3}')
 swap_free=$(free | awk 'NR==3 {print $4}')
 
+# filesystem: Consumo em % de inodes
+filesystem=$(df -i | awk 'NR==1 {print $1}')
+
+devtmpfs=$(df -i | awk 'NR==1 {print $1}')             
+tmpfs=$(df -i | awk 'NR==1 {print $2}')                
+tmpfs=$(df -i | awk 'NR==1 {print $3}')                
+rl_root=$(df -i | awk 'NR==1 {print $4}')  
+sda1=$(df -i | awk 'NR==1 {print $5}')            
+tmpfs=$(df -i | awk 'NR==1 {print $6}')               
+tmpfs=$(df -i | awk 'NR==1 {print $7}')                
+
+# % de inodes
+1iuse=$(df -i | awk 'NR==2 {print $5}')
+2iuse=$(df -i | awk 'NR==3 {print $5}')
+3iuse=$(df -i | awk 'NR==4 {print $5}')
+4iuse=$(df -i | awk 'NR==5 {print $5}')
+5iuse=$(df -i | awk 'NR==6 {print $5}')
+6iuse=$(df -i | awk 'NR==7 {print $5}')
+7iuse=$(df -i | awk 'NR==8 {print $5}')
+
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
 json_data=$(cat <<EOF
@@ -147,6 +167,15 @@ json_data=$(cat <<EOF
 	"$used": "$swap_used"
 	"$free": "$swap_free"
 	},
+"$filesystem": {
+	"$devtmpfs": "$1iuse"
+	"$tmpfs": "$2iuse"
+	"$tmpfs": "$3iuse"
+	"$rl_root": "$4iuse"
+	"$sda1": "$5iuse"
+	"$tmpfs": "$6iuse"
+	"$tmpfs": "$7iuse"
+},
   
 }
 EOF
