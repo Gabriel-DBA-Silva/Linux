@@ -105,7 +105,7 @@ tmpfs=$(df -i | awk 'NR==8 {print $1}')
 # % de inodes
 Iiuse=$(df -i | awk 'NR==2 {print $5}')
 IIiuse=$(df -i | awk 'NR==3 {print $5}')
-III3iuse=$(df -i | awk 'NR==4 {print $5}')
+IIIiuse=$(df -i | awk 'NR==4 {print $5}')
 IViuse=$(df -i | awk 'NR==5 {print $5}')
 Viuse=$(df -i | awk 'NR==6 {print $5}')
 VIiuse=$(df -i | awk 'NR==7 {print $5}')
