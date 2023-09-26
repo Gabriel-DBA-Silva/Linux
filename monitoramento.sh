@@ -156,6 +156,54 @@ json_data=$(cat <<EOF
  $rkBsdisk = $diskC: $dadorkBs_C
  $wkBsdisk = $diskC: $dadowkBs_C
  $utildisk = $diskC: $dadoutil_C
+
+
+ $pgpgins: $dadopgpgins
+$pgpgouts: $dadopgpgouts
+$falts: $dadofalts
+$majflts: $dadomajflts
+
+$total = $mem: $dadototal
+$used = $mem: $dadoused
+$free = $mem: $dadofree
+$shared = $mem: $dadoshared
+$buff_cache = $mem: $dadobuff_cache
+$available = $mem: $dadoavailable
+
+$total = $swap: $swap_total
+$used = $swap: $swap_used 
+$free = $swap: $swap_free 
+
+$devtmpfs = $filesystem: $Iiuse	           
+$tmpfs = $filesystem: $IIiuse	             
+$tmpfs = $filesystem: $IIIiuse             
+$rl_root = $filesystem: $IViuse	
+$sda1  = $filesystem: $Viuse		            
+$tmpfs = $filesystem: $VIiuse		               
+$tmpfs = $filesystem: $VIIiuse
+
+[{"#IFACENAME":"$lo"},{"#IFACENAME":"$enp0s3"}]
+
+$rxpcks   = $lo: $dadorxpcks 
+$txpcks   = $lo: $dadotxpcks
+$rxKbs    = $lo: $dadorxKbs 
+$txKbs    = $lo: $dadotxKbs 
+$ifutil   = $lo: $dadoifutil
+
+$rxpcks = $enp0s3: $endadorxpcks
+$txpcks = $enp0s3: $endadotxpcks
+$rxKbs  = $enp0s3: $endadorxKbs 
+$txKbs  = $enp0s3: $endadotxKbs 
+$ifutil = $enp0s3: $endadoifutil
+
+distribuição_linux: $distLinux
+
+versão_kernel: $Vkernel
+
+arquitetura_processador: $ArqProc
+
+tempo_maquina_ar: $uptime
+
   
 EOF
 )
