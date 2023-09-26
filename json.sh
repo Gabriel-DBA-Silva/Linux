@@ -193,13 +193,13 @@ json_data=$(cat <<EOF
 	"$free": "$swap_free"
 	},
 "$filesystem": {
-	"$devtmpfs": "$1iuse"
-	"$tmpfs": "$2iuse"
-	"$tmpfs": "$3iuse"
-	"$rl_root": "$4iuse"
-	"$sda1": "$5iuse"
-	"$tmpfs": "$6iuse"
-	"$tmpfs": "$7iuse"
+	"$devtmpfs": "$Iiuse"
+	"$tmpfs": "$IIiuse"
+	"$tmpfs": "$IIIiuse"
+	"$rl_root": "$IViuse"
+	"$sda1": "$Viuse"
+	"$tmpfs": "$VIiuse"
+	"$tmpfs": "$VIIiuse"
 	},
 "$lo": {
 	"$rxpcks": "$dadorxpcks"
