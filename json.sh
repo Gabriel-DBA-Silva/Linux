@@ -31,13 +31,13 @@ dadowkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$6}')
 dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
 
 #  distribuição do linux
-distLinux="cat /etc/redhat-release"
+distLinux=$(cat /etc/redhat-release)
 
 # versão do kernel
-Vkernel="uname -r"
+Vkernel=$(uname -r)
 
 #arquitetura do processador
-ArqProc="uname -m"
+ArqProc=$(uname -m)
 
 # tempo que a maquina está no ar
 uptime=$(uptime | awk '{print $2, $3}')
@@ -57,6 +57,8 @@ dadofalts=$(sar -B 1 1 | awk 'NR==4 {print $5}')
 #majflt/s
 majflts=$(sar -B 1 1 | awk 'NR==3 {print $6}')
 dadomajflts=$(sar -B 1 1 | awk 'NR==4 {print $6}')
+
+# memória: total, used,free shared, buff/cache, available
 
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
