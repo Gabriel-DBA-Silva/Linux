@@ -111,6 +111,31 @@ tmpfs=$(df -i | awk 'NR==1 {print $7}')
 6iuse=$(df -i | awk 'NR==7 {print $5}')
 7iuse=$(df -i | awk 'NR==8 {print $5}')
 
+#  rede: rxpck/s, txpck/s, rxKb/s, txKb/s, %ifutil
+## lo
+lo=$(sar -n DEV 1 1 | awk 'NR==4 {print $3}')
+
+rxpcks=$(sar -n DEV 1 1 | awk 'NR==3 {print $4}') 
+txpcks=$(sar -n DEV 1 1 | awk 'NR==3 {print $5}') 
+rxKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $6}') 
+txKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $7}') 
+ifutil=$(sar -n DEV 1 1 | awk 'NR==3 {print $11}')
+
+dadorxpcks=$(sar -n DEV 1 1 | awk 'NR==4 {print $4}') 
+dadotxpcks=$(sar -n DEV 1 1 | awk 'NR==4 {print $5}') 
+dadorxKbs=$(sar -n DEV 1 1 | awk 'NR==4 {print $6}') 
+dadotxKbs=$(sar -n DEV 1 1 | awk 'NR==4 {print $7}') 
+dadoifutil=$(sar -n DEV 1 1 | awk 'NR==4 {print $11}')
+
+## enp0s3
+enp0s3=$(sar -n DEV 1 1 | awk 'NR==5 {print $3}') 
+
+endadorxpcks=$(sar -n DEV 1 1 | awk 'NR==5 {print $4}') 
+endadotxpcks=$(sar -n DEV 1 1 | awk 'NR==5 {print $5}') 
+endadorxKbs=$(sar -n DEV 1 1 | awk 'NR==5 {print $6}') 
+endadotxKbs=$(sar -n DEV 1 1 | awk 'NR==5 {print $7}') 
+endadoifutil=$(sar -n DEV 1 1 | awk 'NR==5 {print $11}')
+
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
 json_data=$(cat <<EOF
@@ -175,8 +200,22 @@ json_data=$(cat <<EOF
 	"$sda1": "$5iuse"
 	"$tmpfs": "$6iuse"
 	"$tmpfs": "$7iuse"
-},
-  
+	},
+"$lo": {
+	"$rxpcks": "$dadorxpcks"
+	"$txpcks": "$dadotxpcks"
+	"$rxKbs": "$dadorxKbs"
+	"$txKbs": "$dadotxKbs"
+	"$ifutil": "$dadoifutil"
+	},
+
+"$enp0s3": {
+	"$rxpcks": "$endadorxpcks"
+	"$txpcks": "$endadotxpcks"
+	"$rxKbs":  "$endadorxKbs"
+	"$txKbs":  "$endadotxKbs"
+	"$ifutil": "$endadoifutil"
+	}  
 }
 EOF
 )
