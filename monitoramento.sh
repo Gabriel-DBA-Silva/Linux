@@ -40,7 +40,10 @@ Vkernel=$(uname -r)
 ArqProc=$(uname -m)
 
 # tempo que a maquina está no ar
-uptime=$(uptime | awk '{print $2, $3}')
+#uptime=$(uptime | awk '{print $2, $3}')
+uptime_seconds=$(($(date +%s) - $(date -d "$(uptime -s)" +%s)))
+
+
 
 # memória: pgpgin/s)
 pgpgins=$(sar -B 1 1 | awk 'NR==3 {print $3}')
@@ -92,15 +95,15 @@ swap_used=$(free | awk 'NR==3 {print $3}')
 swap_free=$(free | awk 'NR==3 {print $4}')
 
 # filesystem: Consumo em % de inodes
-filesystem=$(df -i | awk 'NR==1 {print $1}')
-
-devtmpfs=$(df -i | awk 'NR==2 {print $1}')             
-tmpfs=$(df -i | awk 'NR==3 {print $1}')                
-tmpfs=$(df -i | awk 'NR==4 {print $1}')                
-rl_root=$(df -i | awk 'NR==5 {print $1}')  
-sda1=$(df -i | awk 'NR==6 {print $1}')            
-tmpfs=$(df -i | awk 'NR==7 {print $1}')               
-tmpfs=$(df -i | awk 'NR==8 {print $1}')                
+#filesystem=$(df -i | awk 'NR==1 {print $1}')
+filesystem=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); print $NF ": " $5}')
+#devtmpfs=$(df -i | awk 'NR==2 {print $1}')             
+#tmpfs=$(df -i | awk 'NR==3 {print $1}')                
+#tmpfs=$(df -i | awk 'NR==4 {print $1}')                
+#rl_root=$(df -i | awk 'NR==5 {print $1}')  
+#sda1=$(df -i | awk 'NR==6 {print $1}')            
+#tmpfs=$(df -i | awk 'NR==7 {print $1}')               
+#tmpfs=$(df -i | awk 'NR==8 {print $1}')                
 
 # % de inodes
 Iiuse=$(df -i | awk 'NR==2 {print $5}')
@@ -174,13 +177,8 @@ $total = $swap: $swap_total
 $used = $swap: $swap_used 
 $free = $swap: $swap_free 
 
-$devtmpfs = $filesystem: $Iiuse	           
-$tmpfs = $filesystem: $IIiuse	             
-$tmpfs = $filesystem: $IIIiuse             
-$rl_root = $filesystem: $IViuse	
-$sda1  = $filesystem: $Viuse		            
-$tmpfs = $filesystem: $VIiuse		               
-$tmpfs = $filesystem: $VIIiuse
+
+$filesystem
 
 [{"#IFACENAME":"$lo"},{"#IFACENAME":"$enp0s3"}]
 
@@ -202,7 +200,7 @@ versão_kernel: $Vkernel
 
 arquitetura_processador: $ArqProc
 
-tempo_maquina_ar: $uptime
+tempo_maquina_ar: $uptime_seconds
 
   
 EOF
