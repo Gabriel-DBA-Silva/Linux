@@ -15,7 +15,7 @@ utildisk=$(sar -d 1 1 | grep %util | awk 'NR >1 {print $10}')
 # dados do tps para o diskA
 dadotps_A=$(sar -d 1 1 | awk 'NR==4 {print$4}')
 dadorkBs_A=$(sar -d 1 1 | awk 'NR==4 {print$5 * 1024 * 8}')
-dadowkBs_A=$(sar -d 1 1 | awk 'NR==4 {print$6} * 1024 * 8')
+dadowkBs_A=$(sar -d 1 1 | awk 'NR==4 {print$6 * 1024 * 8}')
 dadoutil_A=$(sar -d 1 1 | awk 'NR==4 {print$11}')
 
 # dados do tps para o diskB
@@ -26,7 +26,7 @@ dadoutil_B=$(sar -d 1 1 | awk 'NR==5 {print$11}')
 
 # dados do tps para o diskC
 dadotps_C=$(sar -d 1 1 | awk 'NR==6 {print$4}')
-dadorkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$5} * 1024 * 8')
+dadorkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$5 * 1024 * 8}')
 dadowkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$6 * 1024 * 8}')
 dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
 
@@ -72,7 +72,7 @@ dadoused=$(free | awk 'NR==2 {print $3 * 1024}')
 
 #free 
 free=$(free | awk 'NR==1 {print $3}')
-dadofree=$(free | awk 'NR==2 {print $4} * 1024')
+dadofree=$(free | awk 'NR==2 {print $4 * 1024}')
 #shared
 
 shared=$(free | awk 'NR==1 {print $4}')
@@ -119,8 +119,8 @@ lo=$(sar -n DEV 1 1 | awk 'NR==4 {print $3}')
 
 rxpcks=$(sar -n DEV 1 1 | awk 'NR==3 {print $4}') 
 txpcks=$(sar -n DEV 1 1 | awk 'NR==3 {print $5}') 
-rxKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $6 * 1024 * 8}') 
-txKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $7 * 1024 * 8}') 
+rxKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $6}') 
+txKbs=$(sar -n DEV 1 1 | awk 'NR==3 {print $7}') 
 ifutil=$(sar -n DEV 1 1 | awk 'NR==3 {print $11}')
 
 dadorxpcks=$(sar -n DEV 1 1 | awk 'NR==4 {print $4}') 
