@@ -95,7 +95,14 @@ swap_free=$(free | awk 'NR==3 {print $4 * 1024}')
 
 # filesystem: Consumo em % de inodes
 #filesystem=$(df -i | awk 'NR==1 {print $1}')
-filesystem=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); print $NF ": " $5}')
+################filesystem=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); print $NF ": " $5}')
+# Obtém a saída original
+filesystem_original=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); print $NF ": " $5}')
+
+# Formata a saída como JSON
+filesystem_json=$(echo "$filesystem_original" | awk -F ': ' '{printf "{\"#FILESY\":\"%s\"},",$1}' | sed 's/,$//')
+filesystem_json="[$filesystem_json]"
+
 #devtmpfs=$(df -i | awk 'NR==2 {print $1}')             
 #tmpfs=$(df -i | awk 'NR==3 {print $1}')                
 #tmpfs=$(df -i | awk 'NR==4 {print $1}')                
@@ -176,8 +183,9 @@ $total = $swap: $swap_total
 $used = $swap: $swap_used 
 $free = $swap: $swap_free 
 
+$filesystem_json
+$filesystem_original
 
-$filesystem
 
 [{"#IFACENAME":"$lo"},{"#IFACENAME":"$enp0s3"}]
 
