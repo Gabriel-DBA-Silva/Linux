@@ -2,7 +2,7 @@
 
 Serverhost="127.0.0.1"
 monitoredhost="Gabriel Linux"
-porta=10051
+porta="10051"
 
 
 #nome dos discos 
@@ -38,86 +38,86 @@ dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
 #  distribuição do linux
 distLinux=$(cat /etc/redhat-release)
 
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[linuxDistribution] -o "$distLinux" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[linuxDistribution] -o "$distLinux" 
 
 # versão do kernel
 Vkernel=$(uname -r)
 
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[kernelVersion] -o "$Vkernel" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[kernelVersion] -o "$Vkernel" 
 
 #arquitetura do processador
 ArqProc=$(uname -m)
 
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[processorArchitecture] -o "$ArqProc" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[processorArchitecture] -o "$ArqProc" 
 
 # tempo que a maquina está no ar
 #uptime=$(uptime | awk '{print $2, $3}')
 uptime_seconds=$(($(date +%s) - $(date -d "$(uptime -s)" +%s)))
 
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[uptime] -o "$uptime_seconds" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[uptime] -o "$uptime_seconds" 
 
 # memória: pgpgin/s)
 pgpgins=$(sar -B 1 1 | awk 'NR==3 {print $3}')
 dadopgpgins=$(sar -B 1 1 | awk 'NR==4 {print $3}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[pgpgins] -o "$dadopgpgins" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[pgpgins] -o "$dadopgpgins" 
 
 # pgpgout/s 
 pgpgouts=$(sar -B 1 1 | awk 'NR==3 {print $4}')
 dadopgpgouts=$(sar -B 1 1 | awk 'NR==4 {print $4}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[pgpgouts] -o "$dadopgpgouts" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[pgpgouts] -o "$dadopgpgouts" 
 
 # falt/s 
 falts=$(sar -B 1 1 | awk 'NR==3 {print $5}')
 dadofalts=$(sar -B 1 1 | awk 'NR==4 {print $5}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[faults] -o "$dadofalts" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[faults] -o "$dadofalts" 
 
 #majflt/s
 majflts=$(sar -B 1 1 | awk 'NR==3 {print $6}')
 dadomajflts=$(sar -B 1 1 | awk 'NR==4 {print $6}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[majflts] -o "$dadomajflts" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[majflts] -o "$dadomajflts" 
 
 # memória (Men): total, used,free shared, buff/cache, available
 mem=$(free | awk 'NR==2 {gsub(/:/, "", $1); print $1}')
 
 total=$(free | awk 'NR==1 {print $1}')
 dadototal=$(free | awk 'NR==2 {print $2 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryTotal] -o "$dadototal" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryTotal] -o "$dadototal" 
 
 # used
 used=$(free | awk 'NR==1 {print $2}')
 dadoused=$(free | awk 'NR==2 {print $3 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryUsed] -o "$dadoused" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryUsed] -o "$dadoused" 
 
 #free 
 free=$(free | awk 'NR==1 {print $3}')
 dadofree=$(free | awk 'NR==2 {print $4 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryFree] -o "$dadofree" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryFree] -o "$dadofree" 
 
 #shared
 shared=$(free | awk 'NR==1 {print $4}')
 dadoshared=$(free | awk 'NR==2 {print $5 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryShared] -o "$dadoshared" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryShared] -o "$dadoshared" 
 
 # buff/cache
 buff_cache=$(free | awk 'NR==1 {print $5}')
 dadobuff_cache=$(free | awk 'NR==2 {print $6 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryCache] -o "$dadobuff_cache" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryCache] -o "$dadobuff_cache" 
 # available
 available=$(free | awk 'NR==1 {print $6}')
 dadoavailable=$(free | awk 'NR==2 {print $7 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryAvailable] -o "$dadoavailable" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[memoryAvailable] -o "$dadoavailable" 
 
 # memória (Swap): swap-total, swap-used, swap-free
 swap=$(free | awk 'NR==3 {gsub(/:/, "", $1); print $1}')
 
 swap_total=$(free | awk 'NR==3 {print $2 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[SwapTotal] -o "$swap_total" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[SwapTotal] -o "$swap_total" 
 
 swap_used=$(free | awk 'NR==3 {print $3 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[usedSwap] -o "$swap_used" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[usedSwap] -o "$swap_used" 
 
 swap_free=$(free | awk 'NR==3 {print $4 * 1024}')
-zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[freeSwap] -o "$swap_free" -vv
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.static[freeSwap] -o "$swap_free" 
 # filesystem: Consumo em % de inodes
 #filesystem=$(df -i | awk 'NR==1 {print $1}')
 ################filesystem=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); print $NF ": " $5}')
