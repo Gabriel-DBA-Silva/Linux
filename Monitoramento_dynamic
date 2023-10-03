@@ -1,0 +1,21 @@
+
+
+# monitoramento dinâmico
+# Disco    1) disco: tps, rKb/s, wkB/s, svctm, %util
+
+# tps
+sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps]", "-o " $3}'
+
+# rkB/s
+
+sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rkBs]", "-o " $4}'
+
+# wkB/s 
+
+sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",wkBs]", "-o " $5}'
+
+# %util
+
+sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",util]", "-o " $10}'
+
+
