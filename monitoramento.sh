@@ -175,6 +175,10 @@ filesystem_original=$(df -i | grep -v "tmpfs" | awk 'NR>1 {gsub(/%/, "", $5); pr
 filesystem_json=$(echo "$filesystem_original" | awk -F ': ' '{printf "{\"#FILESY\":\"%s\"},",$1}' | sed 's/,$//')
 filesystem_json="[$filesystem_json]"
 
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.discovery.filesystem -o "$filesystem_json" 
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#FSNAME},/] -o "$filesystem_original" 
+
+
 #devtmpfs=$(df -i | awk 'NR==2 {print $1}')             
 #tmpfs=$(df -i | awk 'NR==3 {print $1}')                
 #tmpfs=$(df -i | awk 'NR==4 {print $1}')                
@@ -193,7 +197,10 @@ filesystem_json="[$filesystem_json]"
 #VIIiuse=$(df -i | awk 'NR==8 {print $5}')
 
 #  rede: rxpck/s, txpck/s, rxKb/s, txKb/s, %ifutil
-## lo
+## lo e enp0s3 dinânimico e transformando em json
+rede=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{\"#IFACENAME\":\"" $3 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+
+
 lo=$(sar -n DEV 1 1 | awk 'NR==4 {print $3}')
 
 rxpcks=$(sar -n DEV 1 1 | awk 'NR==3 {print $4}') 
@@ -249,7 +256,7 @@ $filesystem_json
 $filesystem_original
 
 
-[{"#IFACENAME":"$lo"},{"#IFACENAME":"$enp0s3"}]
+$rede
 
 $rxpcks   = $lo: $dadorxpcks 
 $txpcks   = $lo: $dadotxpcks
