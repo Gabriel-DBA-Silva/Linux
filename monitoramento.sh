@@ -224,6 +224,42 @@ endadorxKbs=$(sar -n DEV 1 1 | awk 'NR==5 {print $6 * 1024 * 8}')
 endadotxKbs=$(sar -n DEV 1 1 | awk 'NR==5 {print $7 * 1024 * 8}') 
 endadoifutil=$(sar -n DEV 1 1 | awk 'NR==5 {print $11}')
 
+drxpcks=$(cat <<EOF
+$rxpcks = $lo: $dadorxpcks
+$rxpcks = $enp0s3: $endadorxpcks
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#IFACENAME},rxpcks] -o "$drxpcks"
+
+dtxpcks=$(cat <<EOF
+$txpcks = $lo: $dadotxpcks
+$txpcks = $endadotxpcks
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#IFACENAME},txpcks] -o "$dtxpcks"
+
+
+drxKbs=$(cat <<EOF
+$rxKbs = $lo: $dadorxKbs 
+$rxKbs = $endadorxKbs
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#IFACENAME},rxpcks] -o "$drxKbs"
+
+dtxKbs=$(cat <<EOF
+$txKbs = $lo: $dadotxKbs
+$txKbs = $endadotxKbs
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#IFACENAME},txkBs] -o "$dtxKbs"
+
+dfutil=$(cat <<EOF
+$ifutil = $lo: $dadoifutil
+$ifutil = $endadoifutil
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#IFACENAME},ifutil] -o "$dfutil"
+
 #estrutura do JSON para passar os dados de cada disco referente a 
 #disco: tps, rKb/s, wkB/s, svctm, %util
 json_data=$(cat <<EOF
@@ -258,17 +294,11 @@ $filesystem_original
 
 $rede
 
-$rxpcks   = $lo: $dadorxpcks 
-$txpcks   = $lo: $dadotxpcks
-$rxKbs    = $lo: $dadorxKbs 
-$txKbs    = $lo: $dadotxKbs 
-$ifutil   = $lo: $dadoifutil
-
-$rxpcks = $enp0s3: $endadorxpcks
-$txpcks = $enp0s3: $endadotxpcks
-$rxKbs  = $enp0s3: $endadorxKbs 
-$txKbs  = $enp0s3: $endadotxKbs 
-$ifutil = $enp0s3: $endadoifutil
+$drxpcks
+$dtxpcks
+$drxKbs
+$dtxKbs
+$dfutil
 
 distribuição_linux: $distLinux
 
