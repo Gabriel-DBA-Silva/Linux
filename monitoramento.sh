@@ -10,6 +10,9 @@ diskA=$(sar -d 1 1 | awk '$2=="sda" {print $2}')
 diskB=$(sar -d 1 1 | awk '$2=="dm-0" {print $2}')
 diskC=$(sar -d 1 1 | awk '$2=="dm-1" {print $2}')
 
+# pega o nome dos discos dinâmicos e transforma em json
+nomesdiscos=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+
 # nome das métricas de desempenho de disco  
 # tps, rKb/s, wkB/s, %util 
 tpsdisk=$(sar -d 1 1 | grep tps | awk 'NR >1 {print $3}')
@@ -34,6 +37,27 @@ dadotps_C=$(sar -d 1 1 | awk 'NR==6 {print$4}')
 dadorkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$5 * 1024 * 8}')
 dadowkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$6 * 1024 * 8}')
 dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
+
+disks=$(cat <<EOF
+
+ $tpsdisk  = $diskA: $dadotps_A
+ $rkBsdisk = $diskA: $dadorkBs_A
+ $wkBsdisk = $diskA: $dadowkBs_A
+ $utildisk = $diskA: $dadoutil_A
+
+ $tpsdisk  = $diskB: $dadotps_B
+ $rkBsdisk = $diskB: $dadorkBs_B
+ $wkBsdisk = $diskB: $dadowkBs_B
+ $utildisk = $diskB: $dadoutil_B
+
+  $tpsdisk = $diskC: $dadotps_C
+ $rkBsdisk = $diskC: $dadorkBs_C
+ $wkBsdisk = $diskC: $dadowkBs_C
+ $utildisk = $diskC: $dadoutil_C
+
+EOF
+)
+
 
 #  distribuição do linux
 distLinux=$(cat /etc/redhat-release)
@@ -174,22 +198,9 @@ endadoifutil=$(sar -n DEV 1 1 | awk 'NR==5 {print $11}')
 #disco: tps, rKb/s, wkB/s, svctm, %util
 json_data=$(cat <<EOF
 
-[{"#DISKNAME":"$diskA"},{"#DISKNAME":"$diskB"},{"#DISKNAME":"$diskC"}]
+$diskname
 
- $tpsdisk  = $diskA: $dadotps_A
- $rkBsdisk = $diskA: $dadorkBs_A
- $wkBsdisk = $diskA: $dadowkBs_A
- $utildisk = $diskA: $dadoutil_A
-
- $tpsdisk  = $diskB: $dadotps_B
- $rkBsdisk = $diskB: $dadorkBs_B
- $wkBsdisk = $diskB: $dadowkBs_B
- $utildisk = $diskB: $dadoutil_B
-
-  $tpsdisk = $diskC: $dadotps_C
- $rkBsdisk = $diskC: $dadorkBs_C
- $wkBsdisk = $diskC: $dadowkBs_C
- $utildisk = $diskC: $dadoutil_C
+$disks
 
 
  $pgpgins: $dadopgpgins
