@@ -11,7 +11,9 @@ diskB=$(sar -d 1 1 | awk '$2=="dm-0" {print $2}')
 diskC=$(sar -d 1 1 | awk '$2=="dm-1" {print $2}')
 
 # pega o nome dos discos dinâmicos e transforma em json
-nomesdiscos=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.discovery.disco -o "$diskname"
+
 
 # nome das métricas de desempenho de disco  
 # tps, rKb/s, wkB/s, %util 
@@ -38,26 +40,47 @@ dadorkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$5 * 1024 * 8}')
 dadowkBs_C=$(sar -d 1 1 | awk 'NR==6 {print$6 * 1024 * 8}')
 dadoutil_C=$(sar -d 1 1 | awk 'NR==6 {print$11}')
 
-disks=$(cat <<EOF
+
+tps=$(cat <<EOF
 
  $tpsdisk  = $diskA: $dadotps_A
- $rkBsdisk = $diskA: $dadorkBs_A
- $wkBsdisk = $diskA: $dadowkBs_A
- $utildisk = $diskA: $dadoutil_A
-
  $tpsdisk  = $diskB: $dadotps_B
- $rkBsdisk = $diskB: $dadorkBs_B
- $wkBsdisk = $diskB: $dadowkBs_B
- $utildisk = $diskB: $dadoutil_B
+ $tpsdisk = $diskC: $dadotps_C
 
-  $tpsdisk = $diskC: $dadotps_C
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#DISKNAME},tps] -o "$tps"
+
+rkBs=$(cat <<EOF
+
+ $rkBsdisk = $diskA: $dadorkBs_A
+ $rkBsdisk = $diskB: $dadorkBs_B
  $rkBsdisk = $diskC: $dadorkBs_C
+
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#DISKNAME},rkBs] -o "$rkBs"
+
+wkBs=$(cat <<EOF
+
+ $wkBsdisk = $diskA: $dadowkBs_A
+ $wkBsdisk = $diskB: $dadowkBs_B
  $wkBsdisk = $diskC: $dadowkBs_C
+
+EOF
+)
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#DISKNAME},wkBs] -o "$wkBs"
+
+util=$(cat <<EOF
+
+ $utildisk = $diskA: $dadoutil_A
+ $utildisk = $diskB: $dadoutil_B
  $utildisk = $diskC: $dadoutil_C
 
 EOF
 )
 
+zabbix_sender -z "$Serverhost" -p "$porta" -s "$monitoredhost"  -k custom.dynamic[{#DISKNAME},util] -o "$util"
 
 #  distribuição do linux
 distLinux=$(cat /etc/redhat-release)
@@ -200,7 +223,10 @@ json_data=$(cat <<EOF
 
 $diskname
 
-$disks
+$tps
+$rkBs
+$wkBs
+$util
 
 
  $pgpgins: $dadopgpgins
