@@ -1,42 +1,48 @@
-
+ZABBIX_SERVER="127.0.0.1"
+ZABBIX_PORT="10051"
+HOST_NAME="Gabriel Linux"
 
 # monitoramento dinâmico
 # Disco    1) disco: tps, rKb/s, wkB/s, svctm, %util
 
 # tps
-sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps]", "-o " $3}'
+tps=$(sar -d 1 1 | grep -v tps | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",tps] -o " $3}')
 
 # rkB/s
 
-sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rkBs]", "-o " $4}'
+rkBs=$(sar -d 1 1 | grep -v DEV | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",rkBs]", "-o " $4}')
 
 # wkB/s 
 
-sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",wkBs]", "-o " $5}'
+wkBs=$(sar -d 1 1 | grep -v DEV | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",wkBs]", "-o " $5}')
 
 # %util
 
-sar -d 1 1 | grep -v DEV | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",util]", "-o " $10}'
+util=$(sar -d 1 1 | grep -v DEV | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",util]", "-o " $10}')
 
 
 rede: rxpck/s, txpck/s, rxKb/s, txKb/s, %ifutil
 
 #rxpck/s
-sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxpcks]", "-o " $3}'
+rxpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",rxpcks]", "-o " $3}')
 
 #txpck/s
- sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txpcks]", "-o " $4}'
+ txpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",txpcks]", "-o " $4}')
 
 #rxKb/s
-sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxKbs]", "-o " $5}'
+rxKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",rxKbs]", "-o " $5}')
 
 #txKb/s
-sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txKbs]", "-o " $6}'
+txKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",txKbs]", "-o " $6}')
 
 #%ifutil
-sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",ifutil]", "-o " $10}'
-
-
-
-
-
+ifutil=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
+'{print "zabbix_sender -z " zabbix_server " -p " zabbix_port " -s \"" host_name "\" -k custom.dynamic["$2",ifutil]", "-o " $10}')
