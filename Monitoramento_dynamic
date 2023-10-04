@@ -4,6 +4,9 @@ HOST_NAME="Gabriel Linux"
 
 # monitoramento dinâmico
 # Disco    1) disco: tps, rKb/s, wkB/s, svctm, %util
+# pega o nome dos discos dinâmicos e transforma em json
+diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$diskname"
 
 # tps
 tps=$(sar -d 1 1 | grep -v tps | grep Average | awk -v zabbix_server="$ZABBIX_SERVER" -v zabbix_port="$ZABBIX_PORT" -v host_name="$HOST_NAME" 
