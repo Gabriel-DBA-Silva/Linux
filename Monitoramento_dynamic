@@ -103,13 +103,14 @@ zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.s
 
 
 # pega o nome dos discos dinâmicos e transforma em json
-diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+#diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{#DISKNAME:" $2 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$diskname"
 
-tps=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#DISKNAME},tps] -o " $3}')     
-rkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#DISKNAME},rkBs] -o " $4}')   
-wkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#DISKNAME},wkBs] -o " $5}')   
-util=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#DISKNAME},util] -o " $10}')  
+tps=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps] -o " $3}')     
+rkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rkBs] -o " $4}')   
+wkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",wkBs] -o " $5}')   
+util=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",util] -o " $10}')  
 
 # executando o zabbix_sender dos discos
 eval "$tps" 
@@ -126,11 +127,11 @@ networkname=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$networkname"
 
 
-rxpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#IFACENAME},rxpcks] -o " $3}')     
-txpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#IFACENAME},txpcks] -o " $4}')     
-rxKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#IFACENAME},rxkBs] -o " $5}')       
-txKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#IFACENAME},txkBs] -o " $6}')       
-ifutil=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#IFACENAME},ifutil] -o " $10}')    
+rxpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxpcks] -o " $3}')     
+txpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txpcks] -o " $4}')     
+rxKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxkBs] -o " $5}')       
+txKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txkBs] -o " $6}')       
+ifutil=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",ifutil] -o " $10}')    
 
 
 eval "$rxpcks"
@@ -142,10 +143,12 @@ eval "$ifutil"
 
 #json filesystem 
 
-jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "[{\"#FSNAME\":\"" $6 "\"}]" }')
+#jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "[{\"#FSNAME\":\"" $6 "\"}]" }')
+jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "{{#FSNAME}:" $6 "}," }' | sed -e '1s/^/[/' -e '$s/,$/]/')
+
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.filesystem -o "$jsonfilesystem"
 
-filesystem=$(df -i | grep -v tmpfs | grep -v Filesystem | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic[{#FSNAME},FS] -o " $5}' | sed 's/%//g')
+filesystem=$(df -i | grep -v tmpfs | grep -v Filesystem | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$6",FS] -o " $5}' | sed 's/%//g')
 
 eval "$filesystem"
 
