@@ -103,8 +103,9 @@ zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.s
 
 
 # pega o nome dos discos dinâmicos e transforma em json
-#diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
-diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{{#DISKNAME}:" $2 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+#diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{{#DISKNAME}:" $2 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+
+diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$diskname"
 
 tps=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps] -o " $3}')     
@@ -122,8 +123,9 @@ eval "$util"
 
 #rede
 
-#networkname=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{\"#NETWORK\":\"" $3 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
-networkname=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{{#NETWORK}:" $3 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+#networkname=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{{#NETWORK}:" $3 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+
+networkname=$(sar -n DEV 1 1 | grep -v Average | awk 'NR>3 && $2 != "" {print "{\"#NETWORK\":\"" $3 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.network -o "$networkname"
 
 
@@ -144,7 +146,7 @@ eval "$ifutil"
 #json filesystem 
 
 #jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "[{\"#FSNAME\":\"" $6 "\"}]" }')
-jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "{{#FSNAME}:" $6 "}," }' | sed -e '1s/^/[/' -e '$s/,$/]/')
+jsonfilesystem=$(df -i | grep -v tmpfs | grep -v Mounted | awk '{ print "{\"#FSNAME\":\"" $6"\"}," }' | sed -e '1s/^/[/' -e '$s/,$/]/')
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.filesystem -o "$jsonfilesystem"
 
 filesystem=$(df -i | grep -v tmpfs | grep -v Filesystem | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$6",FS] -o " $5}' | sed 's/%//g')
