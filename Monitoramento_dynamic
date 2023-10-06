@@ -105,7 +105,7 @@ zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.s
 # pega o nome dos discos dinâmicos e transforma em json
 #diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{{#DISKNAME}:" $2 "},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
 
-diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"#DISKNAME\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/')
+diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"{#DISKNAME}\":\"" $2 "\"},"}' | sed -e '1s/^/[/' -e '$s/,$/]/' | tr -d '\n')
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$diskname"
 
 tps=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps] -o " $3}')     
