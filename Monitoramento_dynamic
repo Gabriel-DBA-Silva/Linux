@@ -109,8 +109,8 @@ diskname=$(sar -d 1 1 | grep Average | awk 'NR>1 {print "{\"{#DISKNAME}\":\"" $2
 zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.discovery.disco -o "$diskname"
 
 tps=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",tps] -o " $3}')     
-rkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rkBs] -o " $4}')   
-wkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",wkBs] -o " $5}')   
+rkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rkBs] -o " $4 * 8 * 1024}')   
+wkBs=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",wkBs] -o " $5 * 8 * 1024}')   
 util=$(sar -d 1 1 | grep -v tps | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",util] -o " $10}')  
 
 # executando o zabbix_sender dos discos
@@ -131,8 +131,8 @@ zabbix_sender -z "$ZABBIX_SERVER" -p "$ZABBIX_PORT" -s "$HOST_NAME"  -k custom.d
 
 rxpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxpcks] -o " $3}')     
 txpcks=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txpcks] -o " $4}')     
-rxKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxkBs] -o " $5}')       
-txKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txkBs] -o " $6}')       
+rxKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",rxkBs] -o " $5 * 8 * 1024}')       
+txKbs=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",txkBs] -o " $6 * 8 * 1024}')       
 ifutil=$(sar -n DEV 1 1 | grep -v IFACE | grep Average | awk '{print "zabbix_sender -z 127.0.0.1 -p 10051 -s \"Gabriel Linux\" -k custom.dynamic["$2",ifutil] -o " $10}')    
 
 
