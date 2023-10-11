@@ -15,4 +15,8 @@ zabbix_sender --version
 
 ###### PARA EXECUTAR O Monitoramento_dynamic VAI PRECISAR FAZER AS SEGUINTES INSTALAÇÕES
 
+# para poder executar o comando sar -d precisa fazer a seguinte instalação 
+sudo dnf install sysstat
 
+#para poder ver a versão é só usar o comando 
+sar -V
