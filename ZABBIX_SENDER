@@ -1,0 +1,16 @@
+######  INSTALAÇÕES NECESSÁRIAS PARA PODER EXECUTAR O ZABBIX_SENDER #####
+
+## Abra um terminal.
+## Certifique-se de que seu sistema está atualizado executando o seguinte comando:
+
+sudo dnf update
+
+#### Instale o pacote zabbix-sender com o comando dnf:
+
+sudo dnf install zabbix-sender
+
+## Após a instalação, você pode verificar se o zabbix_sender foi instalado com sucesso usando o seguinte comando:
+
+zabbix_sender --version
+
+###### PARA EXECUTAR O 
