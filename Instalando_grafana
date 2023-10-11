@@ -39,3 +39,13 @@ sudo firewall-cmd --add-port=3000/tcp --permanent
 sudo firewall-cmd --reload
 
 
+# parte do script para mostrar o link do zabbix
+# Execute o comando 'ip a' e filtra o endereço IP da interface enp0s3
+ip_address=$(ip a | awk '/enp0s3/ && /inet / {gsub(/\/.*/, "", $2); print $2}')
+
+# Exiba o endereço para acessar o zabbix
+echo "para poder acessar o Grafana acessa com o http:/"$ip_address":3000"
+echo "Login: admin" 
+echo "Senha: admin"
+echo "Após conectar com a senha provisória, você verá a opção de alterar a senha em seguida."
+
