@@ -13,4 +13,6 @@ sudo dnf install zabbix-sender
 
 zabbix_sender --version
 
-###### PARA EXECUTAR O 
+###### PARA EXECUTAR O Monitoramento_dynamic VAI PRECISAR FAZER AS SEGUINTES INSTALAÇÕES
+
+
