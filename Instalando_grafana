@@ -1,1 +1,6 @@
+#!/bin/bash
+
 ##### INSTALAÇÃO DO GRAFANA 
+
+echo "aguarde enquanto ocorre a instalação do GRAFANA"
+
