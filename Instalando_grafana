@@ -4,3 +4,38 @@
 
 echo "aguarde enquanto ocorre a instalação do GRAFANA"
 
+# Adicionando o repositório
+
+echo "?php
+[grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt" >> /etc/yum.repos.d/grafana.repo
+
+echo "repositório criado"
+
+#Instalando o Grafana
+
+sudo dnf install grafana -y
+
+echo "instalação do grafana concluído"
+
+# Habilitando o serviço do grafana
+
+sudo systemctl enable --now grafana-server
+sudo systemctl status grafana-server
+
+echo "serviço do grafana habilitado"
+
+# Configrando o Firewall para acessar o grafana
+
+sudo netstat -pnltu
+sudo firewall-cmd --add-port=3000/tcp --permanent
+sudo firewall-cmd --reload
+
+
